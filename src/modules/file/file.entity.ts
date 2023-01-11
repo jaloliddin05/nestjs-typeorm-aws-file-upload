@@ -5,6 +5,7 @@ import {
   BaseEntity,
   OneToOne,
 } from 'typeorm';
+import { Flower } from '../flower/flower.entity';
 
 @Entity({ name: 'file' })
 export class FileEntity extends BaseEntity {
@@ -16,4 +17,7 @@ export class FileEntity extends BaseEntity {
 
   @Column()
   key: string;
+
+  @OneToOne(() => Flower, (flower) => flower.avatar)
+  flower: Flower;
 }
