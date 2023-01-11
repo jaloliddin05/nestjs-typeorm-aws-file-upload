@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FlowerModule } from './modules/flower/flower.module';
+import { FileModule } from './modules/file/file.module';
 
 import configuration from './config';
 
@@ -21,6 +22,7 @@ import configuration from './config';
       inject: [ConfigService],
     }),
     FlowerModule,
+    FileModule,
   ],
 })
 export class AppModule {}
