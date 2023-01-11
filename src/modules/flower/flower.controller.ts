@@ -9,8 +9,15 @@ import {
   Patch,
   Param,
   Get,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import {
+  FileUploadValidationForCreate,
+  FileUploadValidationForUpdate,
+} from '../../infra/validation';
 
 import { CreateFlowerDto, UpdateFlowerDto } from './dto';
 import { Flower } from './flower.entity';
@@ -38,9 +45,13 @@ export class FlowerController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateFlowerDto): Promise<InsertResult> {
+  @UseInterceptors(FileInterceptor('file'))
+  async saveData(
+    @UploadedFile(FileUploadValidationForCreate) file: Express.Multer.File,
+    @Body() data: CreateFlowerDto,
+  ): Promise<Flower> {
     try {
-      return await this.flowerService.create(data);
+      return await this.flowerService.create(data, file);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -48,12 +59,14 @@ export class FlowerController {
 
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('file'))
   async changeData(
+    @UploadedFile(FileUploadValidationForUpdate) file: Express.Multer.File,
     @Body() data: UpdateFlowerDto,
     @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  ): Promise<UpdateResult | Flower> {
     try {
-      return await this.flowerService.change(data, id);
+      return await this.flowerService.change(data, id, file);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
