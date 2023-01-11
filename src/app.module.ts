@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FlowerModule } from './modules/flower/flower.module';
 
 import configuration from './config';
 
@@ -19,6 +20,7 @@ import configuration from './config';
         configService.get('database'),
       inject: [ConfigService],
     }),
+    FlowerModule,
   ],
 })
 export class AppModule {}
